@@ -1,21 +1,155 @@
-.numero{
-	width:63px;
-	height:60px;
+* {
+	margin: 0;
+	padding: 0;
+	outline: 0;
+	box-sizing: border-box;
+	list-style: none;
+	text-decoration: none;
 }
-.igual{
-	width:134px;
-	height:60px;	
+
+.container {
+	width: 282px;
+	height: 458px;
+	background-color: darkslategrey;
+	border-radius: 0.4em;
+	margin: 3em auto 1em;
+	padding: 0.4em;
+	display: grid;
+	grid-template-rows: 8em auto;
+	box-shadow: 0.2em 0.2em 0.4em 0.3em rgb(18, 17, 17);
 }
-table{
-	margin:auto;
+
+.background__dark {
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	width: 1.5rem;
+	height: 1.5rem;
+	cursor: pointer;
+	border: 1px solid black;
+	border-radius: 3em;
+	box-shadow: 0.1em 0.2em 0.3em 0.2em rgb(81, 79, 79);
 }
-.color_display{
-	height:50px;
-	background-color:#000;
-	border:medium #FFF;
-	font: "Space Age";
-	color:#0F0;
-	font-size:18px;
-	text-align:right;
-	padding:5px;
+
+.background__light {
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	width: 1.5rem;
+	height: 1.5rem;
+	cursor: pointer;
+	border: 1px solid white;
+	border-radius: 3em;
+	box-shadow: 0.1em 0.2em 0.3em 0.2em rgb(228, 219, 219);
+}
+
+.display {
+	width: 94%;
+	height: 5em;
+	background-color: darkgray;
+	border-radius: 0.8em;
+	margin: auto;
+	box-shadow: 0 0.1em 0.2em 0.1em rgb(18, 17, 17);
+}
+
+.display__numbers {
+	width: 100%;
+	height: 49.5%;
+	background-color: rgb(45, 40, 40);
+	margin: auto;
+	border-radius: 0.4em 0.4em 0 0;
+	font-size: 1.5rem;
+	color: white;
+	padding: 0.4em 0 0 0.2em;
+	border: none;
+	overflow: hidden;
+}
+
+.display__result {
+	width: 100%;
+	height: 49.5%;
+	background-color: rgb(41, 31, 31);
+	margin: auto;
+	border-radius: 0 0 0.4em 0.4em;
+	font-size: 2rem;
+	text-align: right;
+	color: white;
+	padding-right: 0.4em;
+}
+
+.container__bottons {
+	text-align: center;
+	display: grid;
+	gap: 0.6em;
+	grid-template: 	"numbers numbers methods"
+					"numbers numbers methods"
+					"last_methods last_methods last_methods";
+}
+
+.numbers {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	display: grid;
+	grid-area: numbers;
+	grid-template-columns: auto auto auto;
+	gap: 0.6em;
+	justify-content: space-between;
+	padding: 0.2em;
+}
+
+.number {
+	border: solid black 1px;
+	border-radius: 0.6em;
+	padding: 0.4em 0.6em 0;
+	font-size: 2rem;
+	color: white;
+	background-color: rgb(24, 23, 23);
+	box-shadow: 0 0.1em 0.2em 0 rgb(18, 17, 17);
+	cursor: pointer;
+}
+
+.number:hover {
+	background-color: rgb(13, 15, 50);
+	box-shadow: 0 0.2em 0.3em 0 rgb(18, 17, 17);
+}
+
+.methods {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	display: grid;
+	grid-area: methods;
+	grid-template-columns: auto;
+	gap: 0.6em;
+	justify-content: space-between;
+	padding: 0.2em;
+}
+
+.method {
+	border: solid black 1px;
+	border-radius: 0.6em;
+	padding: 0.4em 0.6em 0;
+	font-size: 2rem;
+	color: black;
+	background-color: white;
+	box-shadow: 0 0.1em 0.2em 0 rgb(18, 17, 17);
+	cursor: pointer;
+}
+
+.method:hover {
+	background-color: rgb(241, 235, 235);
+	box-shadow: 0 0.2em 0.3em 0 rgb(18, 17, 17);
+}
+
+.last_methods {
+	width: 98%;
+	height: 90%;
+	text-align: center;
+	display: grid;
+	grid-area: last_methods;
+	grid-template-columns: auto auto auto auto;
+	gap: 0.6em;
+	justify-content: space-between;
+	padding: 0.2em;
 }
