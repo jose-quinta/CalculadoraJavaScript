@@ -6,19 +6,47 @@
 	<title>Calculadora</title>
 	<link rel="stylesheet" type="text/css" href="main.css">
 </head>
-<body id="body">
-	<input type="button" name="background" id="background" class="background__dark">
-	<div class="container">
-		<div class="display">
-			<input type="text" class="display__numbers"></input>
-			<div class="display__result"></div>
-		</div>
-		<div class="container__bottons">
-			<div class="numbers"></div>
-			<div class="methods"></div>
-			<div class="last_methods"></div>
-		</div>
+<body id="body" class="night">
+
+	<div class="header">
+		<select name="type" id="type" class="type">
+			<option value="standar">Estandar</option>
+			<option value="decimal_binary">Decimal/Binaria</option>
+			<option value="binary_decimal">Binaria/Decimal</option>
+			<option value="scienc">Cientifica</option>
+		</select>
+		<button class="circle day"></button>
 	</div>
+
+	<div class="container day-container">
+		<section class="display">
+			<input type="text" name="operation" id="operation">
+			<input type="text" name="result" id="result">
+		</section>
+
+		<section class="buttons">
+			<button class="btn btn-function" onclick="javascript:reset()">DEL</button>
+			<button class="btn btn-function" onclick="javascript:delete_number()">C</button>
+			<button class="btn btn-function" onclick="javascript:delete_last_number()">AC</button>
+			<button class="btn btn-function" onclick="javascript:get_function('/')">/</button>
+			<button class="btn btn-number" onclick="javascript:get_number('7')">7</button>
+			<button class="btn btn-number" onclick="javascript:get_number('8')">8</button>
+			<button class="btn btn-number" onclick="javascript:get_number('9')">9</button>
+			<button class="btn btn-function" onclick="javascript:get_function('*')">*</button>
+			<button class="btn btn-number" onclick="javascript:get_number('4')">4</button>
+			<button class="btn btn-number" onclick="javascript:get_number('5')">5</button>
+			<button class="btn btn-number" onclick="javascript:get_number('6')">6</button>
+			<button class="btn btn-function" onclick="javascript:get_function('-')">-</button>
+			<button class="btn btn-number" onclick="javascript:get_number('1')">1</button>
+			<button class="btn btn-number" onclick="javascript:get_number('2')">2</button>
+			<button class="btn btn-number" onclick="javascript:get_number('3')">3</button>
+			<button class="btn btn-function" onclick="javascript:get_function('+')">+</button>
+			<button class="btn btn-number" onclick="javascript:get_number('0')">0</button>
+			<button class="btn btn-function" onclick="javascript:get_number('.')">.</button>
+			<button class="btn btn-function db-width" onclick="javascript:get_result()">=</button>
+		</section>
+	</div>
+
 	<script type="text/javascript" src="index.js"></script>
 	<script type="text/javascript"></script>
 </body>
