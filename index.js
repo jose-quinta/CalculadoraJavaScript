@@ -1,145 +1,287 @@
+class Calculator {
+  constructor() {
+    this.mode = 'standard';
+    this.clearAll();
+  }
 
-const body = document.querySelector('#body');
-const container = document.querySelector('.container');
-const background = document.querySelector('.circle');
+  clearAll() {
+    this.tokens = [];
+    this.currentNumber = '';
+    this.error = null;
+    this.justEvaluated = false;
+  }
 
-const changeBackground = () => {
-	if ( background.classList.contains('day') ) {
+  clearEntry() {
+    this.currentNumber = '';
+    this.error = null;
+  }
 
-		background.classList.add('night');
-		background.classList.remove('day');
+  deleteLastDigit() {
+    if (this.currentNumber.length > 0) {
+      this.currentNumber = this.currentNumber.slice(0, -1);
+    }
+    this.error = null;
+  }
 
-		body.classList.add('day');
-		body.classList.remove('night');
+  digit(value) {
+    if (this.justEvaluated) {
+      this.clearAll();
+    }
+    this.currentNumber += value;
+    this.error = null;
+  }
 
-		container.classList.add('night-container');
-		container.classList.remove('day-container');
+  decimal() {
+    if (this.justEvaluated) {
+      this.clearAll();
+    }
+    if (this.currentNumber.includes('.')) return;
+    this.currentNumber += this.currentNumber === '' ? '0.' : '.';
+    this.error = null;
+  }
 
-	} else {
+  operator(op) {
+    this.error = null;
 
-		background.classList.add('day');
-		background.classList.remove('night');
+    if (this.justEvaluated && this.currentNumber) {
+      this.justEvaluated = false;
+      this.tokens = [this.currentNumber];
+      this.currentNumber = '';
+      this.tokens.push(op);
+      return;
+    }
 
-		body.classList.add('night');
-		body.classList.remove('day');
+    if (this.currentNumber === '') {
+      if (op === '-' && (this.tokens.length === 0 || this.tokens[this.tokens.length - 1] !== '-')) {
+        this.currentNumber = '-';
+        return;
+      }
+      if (this.tokens.length > 0 && '+-*/'.includes(this.tokens[this.tokens.length - 1])) {
+        this.tokens[this.tokens.length - 1] = op;
+      }
+      return;
+    }
 
-		container.classList.add('day-container');
-		container.classList.remove('night-container');
-	}
-};
+    this.tokens.push(this.currentNumber);
+    this.currentNumber = '';
+    this.tokens.push(op);
+  }
 
-background.addEventListener('click', changeBackground);
+  equals() {
+    this.error = null;
+    this.justEvaluated = false;
 
-// END CHANGE BACKGROUND
+    if (this.currentNumber !== '') {
+      this.tokens.push(this.currentNumber);
+      this.currentNumber = '';
+    }
 
-let save = [];
-let number = '';
-let result = 0;
-let operation = document.querySelector('#operation');
-let result_operation = document.querySelector('#result');
-let type_operation = document.querySelector('.type');
+    if (this.tokens.length === 0) return;
 
+    const lastToken = this.tokens[this.tokens.length - 1];
+    if ('+-*/'.includes(lastToken)) {
+      this.error = 'Error: operación incompleta';
+      return;
+    }
 
-function reset() {
-	number = '';
-	save = [];
-	operation.value = number;
-	result_operation.value = number;
+    if (this.mode === 'standard') {
+      this._evaluateStandard();
+    } else if (this.mode === 'decimal_binary') {
+      this._decimalToBinary();
+    } else if (this.mode === 'binary_decimal') {
+      this._binaryToDecimal();
+    } else if (this.mode === 'scientific') {
+      this.error = 'Científica: no implementado';
+    }
+  }
+
+  _evaluateStandard() {
+    if (this.tokens.length === 1) {
+      this.currentNumber = this.tokens[0];
+      this.tokens = [this.currentNumber];
+      this.justEvaluated = true;
+      return;
+    }
+
+    let result = parseFloat(this.tokens[0]);
+    if (isNaN(result)) {
+      this.error = 'Error: primer operando inválido';
+      return;
+    }
+
+    for (let i = 1; i < this.tokens.length; i += 2) {
+      const op = this.tokens[i];
+      const next = parseFloat(this.tokens[i + 1]);
+
+      if (isNaN(next)) {
+        this.error = 'Error: operación incompleta';
+        return;
+      }
+
+      switch (op) {
+        case '+': result += next; break;
+        case '-': result -= next; break;
+        case '*': result *= next; break;
+        case '/':
+          if (next === 0) {
+            this.error = 'Error: división por cero';
+            return;
+          }
+          result /= next;
+          break;
+      }
+    }
+
+    result = parseFloat(result.toPrecision(12));
+
+    this.currentNumber = String(result);
+    this.tokens = [this.currentNumber];
+    this.justEvaluated = true;
+  }
+
+  _decimalToBinary() {
+    if (this.tokens.length > 1) {
+      this.error = 'Error: solo un número a la vez en este modo';
+      return;
+    }
+    if (this.tokens[0].includes('.')) {
+      this.error = 'Error: ingrese un número entero';
+      return;
+    }
+    const value = parseInt(this.tokens[0], 10);
+    if (isNaN(value)) {
+      this.error = 'Error: número decimal inválido';
+      return;
+    }
+    const result = value.toString(2);
+    this.currentNumber = result;
+    this.tokens = [result];
+    this.justEvaluated = true;
+  }
+
+  _binaryToDecimal() {
+    if (this.tokens.length > 1) {
+      this.error = 'Error: solo un número a la vez en este modo';
+      return;
+    }
+    if (!/^[01]+$/.test(this.tokens[0])) {
+      this.error = 'Error: solo dígitos 0 y 1';
+      return;
+    }
+    const value = parseInt(this.tokens[0], 2);
+    this.currentNumber = String(value);
+    this.tokens = [String(value)];
+    this.justEvaluated = true;
+  }
+
+  get operation() {
+    if (this.justEvaluated && !this.error) {
+      return this.currentNumber;
+    }
+    const parts = [...this.tokens];
+    if (this.currentNumber !== '') {
+      parts.push(this.currentNumber);
+    }
+    return parts.join(' ');
+  }
+
+  get result() {
+    if (this.error) return this.error;
+    if (this.justEvaluated) return this.currentNumber;
+    return this.currentNumber;
+  }
+
+  setMode(mode) {
+    if (this.mode !== mode) {
+      this.mode = mode;
+      this.clearAll();
+    }
+  }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  const calc = new Calculator();
+  const operationEl = document.getElementById('operation');
+  const resultEl = document.getElementById('result');
+  const typeEl = document.getElementById('type');
+  const buttonsEl = document.querySelector('.buttons');
+  const themeBtn = document.querySelector('.circle');
 
-function delete_number() {
-	number = '';
-	if ( save.length < 2 ) {
-		operation.value = number;
-		result_operation.value = '';
-	} else {
-		operation.value = ''.concat(save).replace(',', '') + number;
-	}
-}
+  function updateDisplay() {
+    operationEl.value = calc.operation;
+    resultEl.value = calc.result;
+  }
 
+  buttonsEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn');
+    if (!btn) return;
 
-function delete_last_number() {
-	last_position = number.length - 1;
-	number = number.substring(0, last_position);
-	if ( save.length < 2 ) {
-		operation.value = number;
-		result_operation.value = '';
-	} else {
-		operation.value = ''.concat(save).replace(',', '') + number;
-	}
-}
+    const action = btn.dataset.action;
+    const value = btn.dataset.value;
 
+    switch (action) {
+      case 'digit': calc.digit(value); break;
+      case 'decimal': calc.decimal(); break;
+      case 'operator': calc.operator(value); break;
+      case 'equals': calc.equals(); break;
+      case 'clear': calc.clearEntry(); break;
+      case 'clearAll': calc.clearAll(); break;
+      case 'delete': calc.deleteLastDigit(); break;
+    }
 
-function get_number(parameter) {
-	number += parameter;
-	operation.value += parameter;
-}
+    updateDisplay();
+  });
 
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
 
-function get_function(parameter) {
-	if ( number === '' && parameter === '-' ) {
-		number += parameter;
-		operation.value += number;
-		return;
-	}
+    let handled = true;
 
-	if ( number ) {
-		save.push(number);
-	}
+    if (e.key >= '0' && e.key <= '9') {
+      calc.digit(e.key);
+    } else if (e.key === '.') {
+      calc.decimal();
+    } else if (e.key === 'Enter' || e.key === '=') {
+      e.preventDefault();
+      calc.equals();
+    } else if (e.key === 'Backspace') {
+      calc.deleteLastDigit();
+    } else if (e.key === 'Escape') {
+      calc.clearAll();
+    } else if (e.key === 'Delete') {
+      calc.clearEntry();
+    } else if ('+-*/'.includes(e.key)) {
+      e.preventDefault();
+      calc.operator(e.key);
+    } else {
+      handled = false;
+    }
 
-	number = '';
-	save.push(parameter);
-	operation.value += parameter;
-}
+    if (handled) {
+      e.preventDefault();
+      updateDisplay();
+    }
+  });
 
+  typeEl.addEventListener('change', () => {
+    calc.setMode(typeEl.value);
+    updateDisplay();
+  });
 
-function operation_standar() {
-	if (save[1] === '/') {
-		return parseFloat(save[0]) / parseFloat(save[2]);
-	}
+  const THEME_KEY = 'calculator-theme';
 
-	if (save[1] === '*') {
-		return parseFloat(save[0]) * parseFloat(save[2]);
-	}
+  function applyTheme(isDark) {
+    document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+  }
 
-	if (save[1] === '+') {
-		return parseFloat(save[0]) + parseFloat(save[2]);
-	}
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  applyTheme(savedTheme !== 'light');
 
-	if (save[1] === '-') {
-		return parseFloat(save[0]) - parseFloat(save[2]);
-	}
+  themeBtn.addEventListener('click', () => {
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    applyTheme(!isDark);
+  });
 
-	if (save.length === 2) {
-		return parseFloat(save[0]) + parseFloat(save[1]);
-	}
-}
-
-
-function get_result() {
-	save.push(number);
-	if ( type_operation.value === 'standar' ) {
-		result = operation_standar();
-	}
-
-	if ( type_operation.value === 'decimal_binary' ) {
-		result = parseInt(save[0]);
-		result =  result.toString(2);
-	}
-
-	if ( type_operation.value === 'binary_decimal' ) {
-		result = parseInt(save[0], 2);
-	}
-
-	save = [];
-
-	number = String(result);
-	save.push(number);
-	operation.value = number;
-	result_operation.value = number;
-
-	console.log(number);
-}
-
-// console.log('Number global: ', number);
+  updateDisplay();
+});

@@ -1,53 +1,56 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Calculadora</title>
-	<link rel="stylesheet" type="text/css" href="main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora</title>
+  <link rel="stylesheet" href="main.css">
 </head>
-<body id="body" class="night">
+<body>
 
-	<div class="header">
-		<select name="type" id="type" class="type">
-			<option value="standar">Estandar</option>
-			<option value="decimal_binary">Decimal/Binaria</option>
-			<option value="binary_decimal">Binaria/Decimal</option>
-			<option value="scienc">Cientifica</option>
-		</select>
-		<button class="circle day"></button>
-	</div>
+  <div class="header">
+    <select name="type" id="type" class="type">
+      <option value="standard">Estándar</option>
+      <option value="decimal_binary">Decimal a Binaria</option>
+      <option value="binary_decimal">Binaria a Decimal</option>
+      <option value="scientific">Científica</option>
+    </select>
+    <button class="circle" aria-label="Cambiar tema"></button>
+  </div>
 
-	<div class="container day-container">
-		<section class="display">
-			<input type="text" name="operation" id="operation">
-			<input type="text" name="result" id="result">
-		</section>
+  <div class="container">
+    <section class="display">
+      <input type="text" id="operation" readonly autocomplete="off">
+      <input type="text" id="result" readonly autocomplete="off">
+    </section>
 
-		<section class="buttons">
-			<button class="btn btn-function" onclick="javascript:reset()">DEL</button>
-			<button class="btn btn-function" onclick="javascript:delete_number()">C</button>
-			<button class="btn btn-function" onclick="javascript:delete_last_number()">AC</button>
-			<button class="btn btn-function" onclick="javascript:get_function('/')">/</button>
-			<button class="btn btn-number" onclick="javascript:get_number('7')">7</button>
-			<button class="btn btn-number" onclick="javascript:get_number('8')">8</button>
-			<button class="btn btn-number" onclick="javascript:get_number('9')">9</button>
-			<button class="btn btn-function" onclick="javascript:get_function('*')">*</button>
-			<button class="btn btn-number" onclick="javascript:get_number('4')">4</button>
-			<button class="btn btn-number" onclick="javascript:get_number('5')">5</button>
-			<button class="btn btn-number" onclick="javascript:get_number('6')">6</button>
-			<button class="btn btn-function" onclick="javascript:get_function('-')">-</button>
-			<button class="btn btn-number" onclick="javascript:get_number('1')">1</button>
-			<button class="btn btn-number" onclick="javascript:get_number('2')">2</button>
-			<button class="btn btn-number" onclick="javascript:get_number('3')">3</button>
-			<button class="btn btn-function" onclick="javascript:get_function('+')">+</button>
-			<button class="btn btn-number" onclick="javascript:get_number('0')">0</button>
-			<button class="btn btn-function" onclick="javascript:get_number('.')">.</button>
-			<button class="btn btn-function db-width" onclick="javascript:get_result()">=</button>
-		</section>
-	</div>
+    <section class="buttons">
+      <button class="btn btn-function" data-action="clearAll">AC</button>
+      <button class="btn btn-function" data-action="clear">C</button>
+      <button class="btn btn-function" data-action="delete">DEL</button>
+      <button class="btn btn-function" data-action="operator" data-value="/">/</button>
 
-	<script type="text/javascript" src="index.js"></script>
-	<script type="text/javascript"></script>
+      <button class="btn btn-number" data-action="digit" data-value="7">7</button>
+      <button class="btn btn-number" data-action="digit" data-value="8">8</button>
+      <button class="btn btn-number" data-action="digit" data-value="9">9</button>
+      <button class="btn btn-function" data-action="operator" data-value="*">*</button>
+
+      <button class="btn btn-number" data-action="digit" data-value="4">4</button>
+      <button class="btn btn-number" data-action="digit" data-value="5">5</button>
+      <button class="btn btn-number" data-action="digit" data-value="6">6</button>
+      <button class="btn btn-function" data-action="operator" data-value="-">-</button>
+
+      <button class="btn btn-number" data-action="digit" data-value="1">1</button>
+      <button class="btn btn-number" data-action="digit" data-value="2">2</button>
+      <button class="btn btn-number" data-action="digit" data-value="3">3</button>
+      <button class="btn btn-function" data-action="operator" data-value="+">+</button>
+
+      <button class="btn btn-number" data-action="digit" data-value="0">0</button>
+      <button class="btn btn-number" data-action="decimal">.</button>
+      <button class="btn btn-equals" data-action="equals">=</button>
+    </section>
+  </div>
+
+  <script src="index.js"></script>
 </body>
 </html>
